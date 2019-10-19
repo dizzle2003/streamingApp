@@ -18,7 +18,9 @@
   },
   "homepage": "https://github.com/dizzle2003/streamingApp#readme",
   "dependencies": {
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "knex": "^0.19.5",
+    "pg": "^7.12.1"
   },
   "devDependencies": {
     "nodemon": "^1.19.4"
