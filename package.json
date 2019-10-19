@@ -1,0 +1,26 @@
+{
+  "name": "streamingapp",
+  "version": "1.0.0",
+  "description": "Streaming App for Felix Ike",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dizzle2003/streamingApp.git"
+  },
+  "author": "Dennis Ajalie",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dizzle2003/streamingApp/issues"
+  },
+  "homepage": "https://github.com/dizzle2003/streamingApp#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "nodemon": "^1.19.4"
+  }
+}
