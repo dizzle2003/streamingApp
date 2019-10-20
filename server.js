@@ -1,3 +1,12 @@
+/*
+Build a simple audio streaming app
+I should be able to register as a user with my email and password
+I should be able to sign with my email and and password
+I should be able to upload an audio file
+I should be able to play the audio file from the page
+I should be able to see audio files uploaded by other user
+*/
+
 const express = require('express');
 const app = express();
 const cors = require('cors');
@@ -9,31 +18,33 @@ const db = knex({
     version: '7.2',
     connection: {
       host : '127.0.0.1',
-      user : '',
+      user : 'dajalie',
       password : '',
       database : 'audiophile'
     }
   });
 
-app.use(cors);
+app.use(cors());
+app.use(express.json());
 
 
 app.get('/', (req, res) => {
-    res.send('Aloha!!!!')
+    res.send('Felix!!!!')
 })
 
-/*
-Build a simple audio streaming app
-I should be able to register as a user with my email and password
-I should be able to sign with my email and and password
-I should be able to upload an audio file
-I should be able to play the audio file from the page
-I should be able to see audio files uploaded by other user
-*/
 
 //Registration Route
-app.put('/register', (req, res) => {
-    const {username, email, password} = req.body;
+app.post('/register', (req, res) => {
+    const {firstname, lastname, username, genre, email, password} = req.body;
+    db('users').insert({
+        first_name: firstname,
+        last_name: lastname,
+        username: username,
+        email: email, 
+        preferred_genre: genre,
+        joined: new Date()
+    })
+    .then(console.log);
 });
 
 //Sign-in Route
@@ -48,7 +59,7 @@ app.post('/upload', (req, res) => {
 
 //Play audio
 app.get('/play', (req, res) => {
-    res.send(req.query.name);
+
 })
 
 //Get all audio files
