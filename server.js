@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const cors = require('cors');
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcrypt');
 const PORT = process.env.PORT || 5000;
 var knex = require('knex');
 const db = knex({
