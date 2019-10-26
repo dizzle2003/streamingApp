@@ -12,6 +12,7 @@ const app = express();
 const fs = require('fs');
 const cors = require('cors');
 const bcrypt = require('bcrypt');
+const saltRounds = 5;
 const PORT = process.env.PORT || 5000;
 var knex = require('knex');
 const db = knex({
@@ -38,27 +39,42 @@ app.get('/', (req, res) => {
 //Registration Route
 app.post('/register', (req, res) => {
     const {firstname, lastname, username, genre, email, password} = req.body;
-    db('users')
-    .returning('*')
-    .insert({
-        first_name: firstname,
-        last_name: lastname,
-        username: username,
-        email: email, 
-        preferred_genre: genre,
-        joined: new Date()
-    })
-    .then(user => {
-        res.json(user[0]);
-    })
-    .catch(err => {
-        res.status(400).json("Unable to register!")
-    })
+    const hash = bcrypt.hashSync(password, saltRounds);
+    db.transaction(trx => {
+        trx.insert({
+            username: username,
+            hash: hash,
+            email: email
+        })
+        .into('login')
+        .returning('email')
+        .then(loginEmail => {
+            return trx('users')
+            .returning('*')
+            .insert({
+                first_name: firstname,
+                last_name: lastname,
+                username: username,
+                email: loginEmail[0], 
+                genre: genre,
+                joined: new Date()
+            })
+            .then(user => {
+                res.json(user[0]);
+            })
+            .catch(err => {
+                res.status(400).json("Unable to register!")
+            })
+        }) 
+        .then(trx.commit)
+    .catch(trx.rollback)
+    }); 
 });
 
 //Sign-in Route
 app.post('/sign-in', (req, res) => {
     const {email, password} = req.body;
+    
 });
 
 //Upload and audio file
