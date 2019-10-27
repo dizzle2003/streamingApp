@@ -18,6 +18,6 @@ const login = (req, res, db, bcrypt) => {
     })
 }
 
-module.exports = {
+module.exports = Object.freeze({
     loginHandler: login
-}
+});
