@@ -11,7 +11,7 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 const bcrypt = require('bcrypt');
-const saltRounds = 5;
+const saltRounds = 10;
 const PORT = process.env.PORT || 5000;
 var knex = require('knex');
 const db = knex({
@@ -24,8 +24,8 @@ const db = knex({
       database : 'audiophile'
     }
   });
-const { Readable } = require('stream');
-
+const login = require('./controllers/login');
+const profile = require('./controllers/userProfile')
 app.use(cors());
 app.use(express.json());
 
@@ -67,29 +67,23 @@ app.post('/register', (req, res) => {
         }) 
         .then(trx.commit)
     .catch(trx.rollback)
+    
     }); 
 });
 
 //Sign-in Route
-app.post('/signin', (req, res) => {
-    const {email, password} = req.body;
-    db.select('email', 'hash').from('login')//knex always returns an array
-    .where('email', '=', email)
-    .then(resp => {
-        const userExists = bcrypt.compareSync(password, resp[0].hash);
-        if (userExists){
-            db.select('*').from('users')
-            .where('email', '=', email)
-            .then(user => {
-                res.json(user[0]);
-            })
-            .catch(err => {
-                res.status(400).json("unable to retrieve user");
-            })
-        } else {
-                res.status(400).json("email or password invalid");
-        }
-    })
+app.post('/login', (req, res) => {
+    login.loginHandler(req,res,db,bcrypt)
+});
+
+//user profile route
+app.get('/profile/:id', (req, res) => {
+    profile.profileHandler(req,res,db); 
+});
+
+//All users profile
+app.get('/profile', (req, res) => {
+    profile.getAllUsers(req, res, db);
 });
 
 //Upload and audio file
