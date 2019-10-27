@@ -9,7 +9,6 @@ I should be able to see audio files uploaded by other user
 
 const express = require('express');
 const app = express();
-const fs = require('fs');
 const cors = require('cors');
 const bcrypt = require('bcrypt');
 const saltRounds = 5;
@@ -72,9 +71,25 @@ app.post('/register', (req, res) => {
 });
 
 //Sign-in Route
-app.post('/sign-in', (req, res) => {
+app.post('/signin', (req, res) => {
     const {email, password} = req.body;
-    
+    db.select('email', 'hash').from('login')//knex always returns an array
+    .where('email', '=', email)
+    .then(resp => {
+        const userExists = bcrypt.compareSync(password, resp[0].hash);
+        if (userExists){
+            db.select('*').from('users')
+            .where('email', '=', email)
+            .then(user => {
+                res.json(user[0]);
+            })
+            .catch(err => {
+                res.status(400).json("unable to retrieve user");
+            })
+        } else {
+                res.status(400).json("email or password invalid");
+        }
+    })
 });
 
 //Upload and audio file
