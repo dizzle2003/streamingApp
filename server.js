@@ -18,11 +18,11 @@ const db = knex({
     client: 'pg',
     version: '7.2',
     connection: config.dbConnection
-  });
+});
 const login = require('./controllers/login');
-const registration = require('./controllers/register')
-const profile = require('./controllers/userProfile')
-const library = require('./controllers/library')
+const registration = require('./controllers/register');
+const profile = require('./controllers/userProfile');
+const upload = require('./controllers/upload');
 app.use(cors());
 app.use(express.json());
 
@@ -55,25 +55,7 @@ app.get('/profile', (req, res) => {
 
 //Upload and audio file
 app.post('/upload', (req, res) => {
-    const {track_id, title, artist, audio_file, composer, album_art, length, media_type, genre, size} = req.body; 
-    db('library').insert(
-        {track_id,
-         title,
-         artist,
-         genre,
-         composer,
-         media_type,
-         size,
-         length,
-         album_art,
-         audio_file
-        })
-        .then(track => {
-            res.json("upload successful")
-        })
-        .catch(err => {
-            res.status(400).json("Upload Failed")
-        })
+    upload.uploadHandler(req, res, db);
 });
 
 //Play audio
@@ -82,7 +64,7 @@ app.get('/play', (req, res) => {
 });
 
 //Get all audio files
-app.get('/library', async (req, res) => {
+app.get('/library', (req, res) => {
     library.getAllTracks(req, res, db);
 });
 
