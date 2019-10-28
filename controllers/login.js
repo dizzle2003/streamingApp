@@ -1,7 +1,7 @@
 const login = (req, res, db, bcrypt) => {
     const {email, password} = req.body;
     db.select('email', 'hash').from('login')//knex always returns an array
-    .where('email', '=', email)
+    .where({email})
     .then(resp => {
         const userExists = bcrypt.compareSync(password, resp[0].hash);
         if (userExists){
