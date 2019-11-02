@@ -7,7 +7,7 @@ const profileHandler = (req, res, db) => {
         if(user.length){
             res.json(user[0])
         } else {
-            res.status(404).json(`User with this profile not found`)
+            res.status(404).json('User with this profile not found')
         }
         
     })
