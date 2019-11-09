@@ -13,6 +13,11 @@ const cors = require('cors');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const config = require('./config');
+const firebase = require('firebase/app');
+require('firebase/database')
+const firebaseDB = {
+    connection: config.firebaseConnection
+  };
 var knex = require('knex');
 const db = knex({
     client: 'pg',
@@ -27,9 +32,7 @@ app.use(cors());
 app.use(express.json());
 
 
-app.get('/', (req, res) => {
-    res.send('Felix!!!!')
-})
+app.get('/', (req, res) => res.send('Felix!!!!'));
 
 
 //Registration Route
@@ -67,6 +70,8 @@ app.get('/play', (req, res) => {
 app.get('/library', (req, res) => {
     library.getAllTracks(req, res, db);
 });
+
+
 
 
 app.listen(config.PORT, () => console.log(`Application is running on ${config.PORT}`));
